@@ -3,7 +3,7 @@ import React from "react";
 
 const Footer = () => {
     return (
-        <footer className="bg-base-300 text-base-content p-4 mt-10">
+        <footer className="bg-base-300 text-base-content p-4 sm:p-6">
             <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
 
                 <div>
@@ -16,20 +16,20 @@ const Footer = () => {
 
                 <div className="flex flex-col items-center md:items-start">
                     <h3 className="text-xl font-semibold">Contact Us</h3>
-                    <div className="flex items-center gap-3 mt-3">
+                    <div className="flex flex-col items-center md:flex-row md:items-start gap-3 mt-3">
                         <MapPin size={24} />
-                        <div>
+                        <div className="text-center md:text-left">
                             <p>221B Baker Street</p>
                             <p>Pune, India</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3 mt-3">
+                    <div className="flex flex-col items-center md:flex-row md:items-start gap-3 mt-3">
                         <Phone size={24} />
                         <div>
                             <p>+91 9529563325</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3 mt-3">
+                    <div className="flex flex-col items-center md:flex-row md:items-start gap-3 mt-3">
                         <Mail size={24} />
                         <div>
                             <a href="mailto:contact@codefusion.com" className="text-primary hover:underline">
@@ -37,7 +37,6 @@ const Footer = () => {
                             </a>
                         </div>
                     </div>
-
                 </div>
 
                 <div className="flex flex-col items-center md:items-start">

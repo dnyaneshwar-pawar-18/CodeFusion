@@ -10,7 +10,6 @@ const jobPreferenceSchema = new mongoose.Schema({
     currentLocation: { type: String },
     contactNumber: { type: String },
 
-    // Professional Details
     skills: [{ type: String, required: true }],
     experienceLevel: {
         type: String,
@@ -19,7 +18,6 @@ const jobPreferenceSchema = new mongoose.Schema({
     },
     preferredRoles: [{ type: String }],
 
-    // Job Preferences
     jobType: {
         type: String,
         enum: ["Full-time", "Part-time", "Internship", "Remote"],

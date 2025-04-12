@@ -5,10 +5,11 @@ const useForm = (initialValues) => {
 
   const handleChange = (event) => {
     const { name, value, type } = event.target;
+    console.log(event.target.value)
 
     setValues({
       ...values,
-      [name]: type === "number" ? Number(value) : value, // Ensure numbers are stored correctly
+      [name]: type === "number" ? Number(value) : value,  
     });
   };
 

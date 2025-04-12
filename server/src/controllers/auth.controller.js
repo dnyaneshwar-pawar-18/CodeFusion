@@ -4,18 +4,8 @@ import bcrypt from "bcryptjs";
 import Mentor from "../models/mentor.model.js";
 
 export const signup = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
     try {
-        if (!name || !email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-        if (password.length < 6) {
-            return res
-                .status(400)
-                .json({ message: "Password must be at least 6 characters" });
-        }
-        console.log("here...");
-
         const user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({ message: "User already exists" });
@@ -25,12 +15,11 @@ export const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new User({
-            name,
-            email,
+            ...req.body,
             password: hashedPassword,
         });
 
-        console.log(newUser);
+        // console.log(newUser);
 
         if (newUser) {
             generateToken(newUser._id, res);
@@ -38,15 +27,29 @@ export const signup = async (req, res) => {
 
             res.status(200).json({
                 _id: newUser._id,
-                name: newUser.name,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
                 email: newUser.email,
+                password: newUser.password,
+                currentLocation: newUser.currentLocation,
+                contactNumber: newUser.contactNumber,
+                preferredRole: newUser.preferredRole,
+                preferredLocation: newUser.preferredLocation,
+                skills: newUser.skills,
+                experienceLevel: newUser.experienceLevel,
+                jobType: newUser.jobType,
+                expectedSalary: newUser.expectedSalary,
             });
+
         } else {
             res.status(400).json({ message: "Invalid user data" });
         }
     } catch (error) {
-        console.log(error.message);
-        res.json({ message: "Internal server error" });
+        if (error.name === 'ValidationError') {
+            const errors = Object.values(error.errors).map((err) => err.message); //? Todo
+            return res.status(400).json({ message: errors.join(', ') });
+        }
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
 
@@ -111,7 +114,6 @@ export const subscribeMentor = async (req, res) => {
     const { _id: mentorId } = req.params;
 
     try {
-        console.log('here...')
         const user = await User.findById(req.user._id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -187,7 +189,7 @@ export const getMentees = async (req, res) => {
             ),
         }));
 
-        console.log("Filtered Mentees:", filteredMentees);  
+        console.log("Filtered Mentees:", filteredMentees);
 
         res.status(200).json({ mentees: filteredMentees });
     } catch (error) {

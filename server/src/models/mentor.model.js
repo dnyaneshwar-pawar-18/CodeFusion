@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const mentorSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        required: [true, 'First name is required'], 
+        required: [true, 'First name is required'],
     },
     lastName: {
         type: String,
@@ -27,9 +27,17 @@ const mentorSchema = new mongoose.Schema({
         required: [true, 'Password is required'],
         minlength: [6, 'Password must be at least 6 characters long'],
     },
-    jobTitle: {
+    domain: {
         type: String,
-        required: [true, 'Job title is required'],
+        enum: {
+            values: ["AI ML", "Backend Developer", "Full Stack Developer", "Cyber Security"],
+            message: '{VALUE} is not a valid category',
+        },
+        required: [true, 'Category is required'],
+    },
+    role: {
+        type: String,
+        required: true,
     },
     company: {
         type: String,
@@ -47,7 +55,7 @@ const mentorSchema = new mongoose.Schema({
         required: [true, 'Category is required'],
     },
     skills: {
-        type: [String], 
+        type: [String],
         required: [true, 'Skills are required'],
     },
     bio: {
@@ -55,15 +63,20 @@ const mentorSchema = new mongoose.Schema({
         required: [true, 'Bio is required'],
         minlength: [50, 'Bio must be at least 50 characters long'],
     },
-    inUrl: {
+    linkedInUrl: {
         type: String,
         required: [true, 'LinkedIn URL is required'],
-        validate: {
-            validator: function (v) {
-                return /^(https?:\/\/)?([\w\d\-]+\.)*linkedin\.com\/.*$/.test(v); 
-            },
-            message: 'Invalid LinkedIn URL',
-        },
+        // validate: {
+        //     validator: function (v) {
+        //         return /^(https?:\/\/)?([\w\d\-]+\.)*linkedin\.com\/.*$/.test(v);
+        //     },
+        //     message: 'Invalid LinkedIn URL',
+        // },
+    },
+
+    profileImg: {
+        type: String,
+        required: [true, 'Image is required'],
     },
 }, { timestamps: true });
 

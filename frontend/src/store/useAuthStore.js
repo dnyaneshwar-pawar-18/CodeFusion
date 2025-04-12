@@ -24,6 +24,7 @@ export const useAuthStore = create((set, get) => ({
 
     signin: async (data) => {
         set({ loading: true });
+        console.log(data)
         try {
             const res = await axiosInstance.post('/auth/login', data);
             console.log(res)
@@ -59,6 +60,7 @@ export const useAuthStore = create((set, get) => ({
     getMentors: async () => {
         set({ loading: true });
         try {
+            console.log('here in getments store ')
             const response = await axiosInstance.get('/auth/getMentors');
             console.log(response.data);
             set({

@@ -11,7 +11,7 @@ router.post('/subscribe/:_id', protectRoute,  subscribeMentor);
 
 router.get('/checkAuth', protectRoute, checkAuth);
 router.get('/getMentors', protectRoute,  getMentors);
-router.get('/getMentees', protectMentorRoute,  getMentees);
+// router.get('/getMentees', protectMentorRoute,  getMentees);
 
 
 export default router;

@@ -1,11 +1,15 @@
-import { response } from "express";
 import { generateMentorToken } from "../lib/utils.js";
 import Mentor from "../models/mentor.model.js";
 import bcrypt from 'bcryptjs'
+import cloudinary from "../lib/cloudinary.js";
+// import multer from "multer";
+
+// const storage = multer.memoryStorage(); // Store file in memory
+// const upload = multer({ storage });
 
 export const applyMentor = async (req, res) => {
-    const { email, password } = req.body;
-
+    const { email, password, profileImg } = req.body;
+    console.log(profileImg)
     try {
         const mentor = await Mentor.findOne({ email });
         if (mentor) {
@@ -15,9 +19,18 @@ export const applyMentor = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newMentor = new Mentor({
+        let cloudinaryResponse = null;
+
+        if (profileImg) {
+            cloudinaryResponse = await cloudinary.uploader.upload(profileImg);
+        }
+
+        console.log(cloudinaryResponse)
+
+        const newMentor = new Mentor({  
             ...req.body,
-            password: hashedPassword
+            password: hashedPassword,
+            profileImg: cloudinaryResponse?.secure_url ? cloudinaryResponse.secure_url : "",
         })
         console.log(newMentor);
         if (newMentor) {
@@ -30,13 +43,15 @@ export const applyMentor = async (req, res) => {
                 firstName: newMentor.firstName,
                 lastName: newMentor.lastName,
                 email: newMentor.email,
-                jobTitle: newMentor.jobTitle,
+                domain: newMentor.domain,
+                role: newMentor.role,
                 company: newMentor.company,
                 location: newMentor.location,
                 category: newMentor.category,
                 skills: newMentor.skills,
                 bio: newMentor.bio,
-                inUrl: newMentor.inUrl,
+                linkedInUrl: newMentor.linkedInUrl,
+                profileImg: newMentor.profileImg,
             });
 
         } else {
@@ -51,6 +66,7 @@ export const applyMentor = async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 }
+
 
 export const loginMentor = async (req, res) => {
     const { email, password } = req.body;
@@ -151,13 +167,35 @@ export const editMentorProfile = async (req, res) => {
 
         const updatedMentor = await Mentor.findByIdAndUpdate(mentorId, updates, { new: true });
 
-            if (!updatedMentor) {
-                return res.status(404).json({ message: 'Mentor not found' });
-            }
+        if (!updatedMentor) {
+            return res.status(404).json({ message: 'Mentor not found' });
+        }
 
         res.status(200).json({ message: 'Profile updated successfully', mentor: updatedMentor });
     } catch (error) {
         console.error('Error updating profile:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+}
+
+
+export const getDomainSpecificMentorData = async (req, res) => {
+    const { domain } = req.params;
+    console.log('domain', domain)
+    const formattedDomain = domain.replace(/-/g, ' ').toLowerCase();
+    console.log('formattedDomain', formattedDomain)
+    try {
+        const mentors = await Mentor.find({
+            $expr: { $eq: [{ $toLower: "$domain" }, formattedDomain] }
+        });
+
+        if (mentors.length === 0) {
+            return res.status(404).json({ message: "404 - Not Found!" });
+        }
+
+        res.status(200).json(mentors);
+    } catch (error) {
+        console.error('Error getting domain specific mentor data:', error);
+        res.status(500).json({ message: 'Internal Server error' });
     }
 }

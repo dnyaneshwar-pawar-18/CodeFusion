@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import useForm from "../hooks/useForm";
-import { Loader, Lock, LogIn, Mail, User, UserPlus } from "lucide-react";
+import { ArrowRight, Loader, Lock, LogIn, Mail} from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
+import { Link } from "react-router-dom";
 
 const SignIn = () => {
     const { values, handleChange } = useForm({
@@ -89,6 +90,16 @@ const SignIn = () => {
                                     </>
                                 )}
                             </button>
+
+                            <p className="mt-8 text-center text-lg text-gray-400">
+                                Not a member?{" "}
+                                <Link
+                                    to="/user/signup"
+                                    className="text-lg text-primary hover:scale-50"
+                                >
+                                    Sign up now <ArrowRight className="inline h-4 w-4" />
+                                </Link>
+                            </p>
                         </div>
                     </form>
                 </div>
